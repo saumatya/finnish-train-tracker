@@ -69,7 +69,7 @@ const TrainTracker = () => {
       const date = new Date();
       setCurrentDateTime(date.toLocaleString("fi-FI"));
     };
-    updateDateTime(); // Initialize with current date/time
+    updateDateTime(); 
     const interval = setInterval(updateDateTime, 1000); // Update every second
     return () => clearInterval(interval);
   }, []);
