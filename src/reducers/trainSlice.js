@@ -4,14 +4,24 @@ import axios from "axios";
 export const fetchTrainLocations = createAsyncThunk(
   "trains/fetch",
   async () => {
-    const response = await axios.get("http://127.0.0.1:8000/trains");
+    const response = await axios.get(
+      "https://rata.digitraffic.fi/api/v1/train-locations/latest"
+    );
     return response.data;
   }
 );
 
+// Fetch station locations
+export const fetchStations = createAsyncThunk("stations/fetch", async () => {
+  const response = await axios.get(
+    "https://rata.digitraffic.fi/api/v1/metadata/stations"
+  );
+  return response.data;
+});
+
 const trainSlice = createSlice({
   name: "trains",
-  initialState: { trains: [], loading: false, error: null },
+  initialState: { trains: [], stations: [], loading: false, error: null },
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -23,6 +33,19 @@ const trainSlice = createSlice({
         state.trains = action.payload;
       })
       .addCase(fetchTrainLocations.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+      // Station locations
+      .addCase(fetchStations.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchStations.fulfilled, (state, action) => {
+        state.loading = false;
+        state.stations = action.payload;
+      })
+      .addCase(fetchStations.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });

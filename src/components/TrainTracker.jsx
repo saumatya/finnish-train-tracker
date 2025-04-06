@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTrainLocations, fetchStations } from "../reducers/trainSlice";
@@ -6,10 +7,6 @@ import "leaflet/dist/leaflet.css";
 import { Card, CardContent } from "@mui/material";
 import L from "leaflet";
 import "leaflet-minimap";
-import TrainDetail from "./TrainDetail";
-
-
-
 
 // Custom Icons
 const trainIcon = new L.Icon({
@@ -33,7 +30,6 @@ const MiniMapControl = () => {
 };
 
 const TrainTracker = () => {
-  const [selectedTrainId, setSelectedTrainId] = useState(null);
   const dispatch = useDispatch();
   const { trains, stations, loading, error } = useSelector((state) => state.trains);
   const [intervalId, setIntervalId] = useState(null);
@@ -62,19 +58,13 @@ const TrainTracker = () => {
         </LayersControl>
         <MiniMapControl />
         {trains.map((train) => (
-          <Marker key={train.id} position={[train.latitude, train.longitude]} icon={trainIcon}>
+          <Marker key={train.trainNumber} position={[train.location.coordinates[1], train.location.coordinates[0]]} icon={trainIcon}>
             <Popup>
               <Card>
                 <CardContent>
-                  <p>Train ID: {train.id}</p>
+                  <p>Train ID: {train.trainNumber}</p>
                   <p>Speed: {train.speed} km/h</p>
-                  <p>Destination: {train.destination}</p>
-                  <button 
-                      onClick={() => setSelectedTrainId(train.id)} 
-                      className="text-blue-600 underline mt-2"
-                    >
-                      View Details
-                </button>
+                  <p>Destination: {train.departureDate}</p>
                 </CardContent>
               </Card>
             </Popup>
@@ -100,10 +90,6 @@ const TrainTracker = () => {
           </Marker>
         ))}
       </MapContainer>
-
-
-      <TrainDetail trainId={selectedTrainId} />
-
     </div>
   );
 };
