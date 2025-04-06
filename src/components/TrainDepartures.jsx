@@ -9,7 +9,6 @@ const TrainDepartures = () => {
   useEffect(() => {
     const fetchTrains = async () => {
       try {
-        //only departures at TPE
         const response = await fetch(
           `https://rata.digitraffic.fi/api/v1/live-trains/station/${stationName}?departed_trains=5&departing_trains=5&include_nonstopping=false`
         );
@@ -57,41 +56,44 @@ const TrainDepartures = () => {
   return (
     <div className="p-4">
       <h2 className="text-xl font-semibold mb-4">Departures from Station {stationName}</h2>
-      <table className="w-full table-auto border border-gray-300">
-  <thead>
-    <tr className="bg-gray-200 text-left">
-      <th className="p-2 border">Train</th>
-      <th className="p-2 border">Last Station</th>
-      <th className="p-2 border">Departure Time</th>
-      <th className="p-2 border">Track Number</th>
-      <th className="p-2 border">Information</th>
-    </tr>
-  </thead>
-  <tbody>
-    {trains.map((train, index) => {
-      const departureTime = new Date(train.departureTime);
-     
-      if (isNaN(departureTime)) return null; // no departure time for ending train journey
-      
-      return (
-        <tr key={index} className="border-t">
-          <td className="p-2 border">{train.trainType} {train.trainNumber}</td>
-          <td className="p-2 border">{train.finalStopCode}</td>
-          <td className="p-2 border">
-            {departureTime.toLocaleTimeString("fi-FI", { hour: '2-digit', minute: '2-digit' })}
-          </td>
-          <td className="p-2 border">{train.trackNumber}</td>
-          <td className="p-2 border">
-            {train.trainType.toUpperCase()} {train.trainNumber} going to {train.finalStopCode} on track {train.trackNumber} at {departureTime.toLocaleTimeString("fi-FI", { hour: '2-digit', minute: '2-digit' })}
-          </td>
-        </tr>
-      );
-    })}
-  </tbody>
-</table>
-
+      <div className="grid gap-4">
+        {trains.map((train, index) => {
+          const departureTime = new Date(train.departureTime);
+          if (isNaN(departureTime)) return null;
+  
+          const formattedTime = departureTime.toLocaleTimeString("fi-FI", {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+  
+          return (
+            <div
+              key={index}
+              className="bg-white rounded-lg shadow-md p-4 border-l-4 border-blue-500 hover:shadow-lg transition"
+            >
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="text-lg font-bold">
+                  🚆 {train.trainType} {train.trainNumber}
+                </h3>
+                <span className="text-sm text-gray-500">Track {train.trackNumber || "-"}</span>
+              </div>
+              <p className="text-sm text-gray-700">
+                <strong>Destination:</strong> {train.finalStopCode}
+              </p>
+              <p className="text-sm text-gray-700">
+                <strong>Departure Time:</strong> {formattedTime}
+              </p>
+              <p className="text-xs text-gray-500 mt-2 italic">
+                {train.trainType.toUpperCase()} {train.trainNumber} going to{" "}
+                {train.finalStopCode} on track {train.trackNumber} at {formattedTime}
+              </p>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
+  
 };
 
 export default TrainDepartures;
