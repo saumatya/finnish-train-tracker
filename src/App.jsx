@@ -1,25 +1,21 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import TrainTracker from './components/TrainTracker'
-import TrainDetail from './components/TrainDetail'
-import TrainArrivals from './components/TrainArrivals'
-import TrainDepartures from './components/TrainDepartures'
-import StationDetail from './components/StationDetail'
-import SearchBox from './components/SearchBox'
 import Sidebar from './components/Sidebar'
+import SearchBox from './components/SearchBox'
+import TrainTracker from './components/TrainTracker'
 
 function App() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [selectedTrainId, setSelectedTrainId] = useState(null);
+
+  const handleTrainSelect = (trainId) => {
+    setSelectedTrainId(trainId);
+    setIsSidebarOpen(true);
+  };
   return (
     <div className="flex h-screen">
-      {/* <SearchBox /> */}
-      <Sidebar />
-      <TrainTracker />
-      {/* <TrainDetail />
-      <StationDetail />
-      <TrainArrivals/>
-      <TrainDepartures/> */}
-
+      <div className="flex-1 p-4">
+        <TrainTracker />
+      </div>
     </div>
   )
 }

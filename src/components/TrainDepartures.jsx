@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const stationName="TPE"; // tampere hardcoded remove later
-const TrainDepartures = () => {
+const TrainDepartures = ({station}) => {
   const [trains, setTrains] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -10,7 +9,7 @@ const TrainDepartures = () => {
     const fetchTrains = async () => {
       try {
         const response = await fetch(
-          `https://rata.digitraffic.fi/api/v1/live-trains/station/${stationName}?departed_trains=5&departing_trains=5&include_nonstopping=false`
+          `https://rata.digitraffic.fi/api/v1/live-trains/station/${station.stationShortCode}?departed_trains=5&departing_trains=5&include_nonstopping=false`
         );
         if (!response.ok) throw new Error("Failed to fetch train data");
         const data = await response.json();
@@ -25,7 +24,7 @@ const TrainDepartures = () => {
           
           const departureRow = timeTableRows.find(
             (row) =>
-              row.stationShortCode === stationName && row.type === "DEPARTURE"
+              row.stationShortCode === station.stationShortCode && row.type === "DEPARTURE"
           );
           const departureTime = departureRow?.scheduledTime || "N/A";
           const trackNumber = departureRow?.commercialTrack || "N/A"; // Track number
@@ -55,7 +54,7 @@ const TrainDepartures = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-semibold mb-4">Departures from Station {stationName}</h2>
+      <h2 className="text-xl font-semibold mb-4">Departures from Station {station.stationShortCode}</h2>
       <div className="grid gap-4">
         {trains.map((train, index) => {
           const departureTime = new Date(train.departureTime);
