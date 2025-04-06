@@ -1,69 +1,108 @@
 import React, { useEffect, useState } from "react";
-import { useSelector,useDispatch } from "react-redux";
-import Input from '@mui/joy/Input';
+import { useDispatch, useSelector } from "react-redux";
+import {
+  TextField,
+  Autocomplete,
+  ListItem,
+  ListItemText,
+  CircularProgress,
+  Box,
+} from "@mui/material";
 import { fetchStations } from "../reducers/stationSlice";
 
 const SearchBox = ({ onStationSelect }) => {
   const dispatch = useDispatch();
-  // const [stations, setStations] = useState([]);
-  const stations=useSelector((state) => state.stations.stations);
+  const stations = useSelector((state) => state.stations.stations);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredStations, setFilteredStations] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [selectedStation, setSelectedStation] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchStations())
+    setLoading(true);
+    dispatch(fetchStations()).finally(() => setLoading(false));
   }, [dispatch]);
 
   useEffect(() => {
-    const filtered = stations.filter((station) =>
-      station.stationName.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setFilteredStations(filtered);
+    if (searchQuery) {
+      const filtered = stations.filter((station) =>
+        station.stationName.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredStations(filtered);
+    } else {
+      setFilteredStations([]);
+    }
   }, [searchQuery, stations]);
-
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
 
   const handleStationSelect = (station) => {
     setSelectedStation(station);
-    setSearchQuery(station.stationName);
+    setSearchQuery(station?.stationName);
     onStationSelect(station);
   };
 
   return (
-    <div className="p-4">
-      {/* Search Box */}
-      <Input
-        placeholder="Search for a station"
-        value={searchQuery}
-        onChange={handleSearchChange}
-        className="p-2 border border-gray-300 mb-4 w-full"
+    <Box
+      sx={{
+        width: 350,
+        backgroundColor: "white",
+        borderRadius: 4,
+        boxShadow: 3,
+      }}
+    >
+      <Autocomplete
+        freeSolo
+        options={filteredStations}
+        getOptionLabel={(option) => option.stationName}
+        value={selectedStation || null}
+        onInputChange={(event, newInputValue) => setSearchQuery(newInputValue)}
+        onChange={(event, newValue) => handleStationSelect(newValue)}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            placeholder={searchQuery ? "" : "Search for a station"}
+            variant="outlined"
+            fullWidth
+            size="medium"
+            InputLabelProps={{ shrink: false }}
+            InputProps={{
+              ...params.InputProps,
+              sx: {
+                borderRadius: 4, 
+                "& fieldset": {
+                  borderRadius: 4,
+                },
+              },
+            }}
+          />
+        )}
+        renderOption={(props, option, index) => (
+          <ListItem key={index} {...props} button>
+            <ListItemText primary={option.stationName} />
+          </ListItem>
+        )}
+        loading={loading}
+        noOptionsText="No stations found"
+        isOptionEqualToValue={(option, value) =>
+          option.stationShortCode === value.stationShortCode
+        }
       />
 
-      {/* Dropdown for Station Names */}
-      {searchQuery && (
-        <ul className="border border-gray-300 max-h-60 overflow-y-auto p-2">
-          {filteredStations.map((station) => (
-            <li
-              key={station.stationShortCode}
-              onClick={() => handleStationSelect(station)}
-              className="p-2 cursor-pointer hover:bg-gray-200"
-            >
-              {station.stationName}
-            </li>
-          ))}
-        </ul>
+      {/* Loading Indicator */}
+      {loading && (
+        <Box sx={{ display: "flex", justifyContent: "center", padding: 2 }}>
+          <CircularProgress />
+        </Box>
       )}
 
-      {/* Display Selected Station */}
-      {selectedStation && (
-        <div className="mt-4">
-          <p>Selected Station: {selectedStation.stationName}</p>
-        </div>
+      {/* Hide the selected station text after selection to keep searchbox clean */}
+      {selectedStation && false && (
+        <Box sx={{ mt: 2 }}>
+          <p>
+            <strong>Selected Station:</strong> {selectedStation.stationName}
+          </p>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 
