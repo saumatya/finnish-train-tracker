@@ -40,7 +40,7 @@ const TrainTracker = () => {
   useEffect(() => {
     dispatch(fetchTrainLocations());
     dispatch(fetchStations());
-    const id = setInterval(() => dispatch(fetchTrainLocations()), 30000);
+    const id = setInterval(() => dispatch(fetchTrainLocations()), 10000);
     setIntervalId(id);
     return () => clearInterval(id);
   }, [dispatch]);

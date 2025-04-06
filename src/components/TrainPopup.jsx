@@ -2,23 +2,23 @@ import React from 'react';
 import { Card, CardContent } from '@mui/material';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTrainByNumber } from '../reducers/trainSlice';
+import { fetchTrainDetailsByNumber } from '../reducers/trainSlice';
 
 const TrainPopup = ({ train, handleTrainDetails }) => {
   const dispatch = useDispatch();
     useEffect(() => {
-      dispatch(fetchTrainByNumber(train.trainNumber));
+      dispatch(fetchTrainDetailsByNumber(train.trainNumber));
     }, [train.trainNumber, dispatch]);
 
-    const trainByNumber = useSelector((state) => state.trains.trainByNumber);
+    const trainDetailsByNumber = useSelector((state) => state.trains.trainDetailsByNumber);
     
   return (
     <Card>
-      {trainByNumber.length > 0 && <CardContent>
-        <p>Train: {trainByNumber[0].trainType} {train.trainNumber}</p>
+      {trainDetailsByNumber.length > 0 && <CardContent>
+        <p>Train: {trainDetailsByNumber[0].trainType} {train.trainNumber}</p>
         <p>Speed: {train.speed} km/h</p>
-        <p>Category: {trainByNumber[0].trainCategory}</p>
-        <p>Operator: {trainByNumber[0].operatorShortCode}</p>
+        <p>Category: {trainDetailsByNumber[0].trainCategory}</p>
+        <p>Operator: {trainDetailsByNumber[0].operatorShortCode}</p>
         <button
           onClick={() => handleTrainDetails(train)}
           className="text-blue-600 underline mt-2"
