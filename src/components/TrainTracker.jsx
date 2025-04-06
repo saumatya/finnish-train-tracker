@@ -7,7 +7,7 @@ import "leaflet/dist/leaflet.css";
 import { Card, CardContent } from "@mui/material";
 import L from "leaflet";
 import "leaflet-minimap";
-
+import TrainDetail from "./TrainDetail";
 // Custom Icons
 const trainIcon = new L.Icon({
   iconUrl: "/train-marker.png",
@@ -30,6 +30,7 @@ const MiniMapControl = () => {
 };
 
 const TrainTracker = () => {
+  const [selectedTrainId, setSelectedTrainId] = useState(null);
   const dispatch = useDispatch();
   const { trains, stations, loading, error } = useSelector((state) => state.trains);
   const [intervalId, setIntervalId] = useState(null);
@@ -65,6 +66,21 @@ const TrainTracker = () => {
                   <p>Train ID: {train.trainNumber}</p>
                   <p>Speed: {train.speed} km/h</p>
                   <p>Destination: {train.departureDate}</p>
+                  <button 
+                      // onClick={() => setSelectedTrainId(train.id)} 
+                      onClick={() => {
+                        setTimeout(() => {
+                          if (train && train.trainNumber!== undefined) {
+                            setSelectedTrainId(train.trainNumber);
+                          } else {
+                            console.error('Train or train.id is undefined');
+                          }
+                        }, 5000); // 5000 milliseconds = 5 seconds
+                      }}
+                      className="text-blue-600 underline mt-2"
+                    >
+                      View Details
+                </button>
                 </CardContent>
               </Card>
             </Popup>
@@ -90,6 +106,10 @@ const TrainTracker = () => {
           </Marker>
         ))}
       </MapContainer>
+
+
+      <TrainDetail trainId={selectedTrainId} />
+
     </div>
   );
 };
