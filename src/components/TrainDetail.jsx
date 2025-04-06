@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-const TrainDetail = () => {
+const TrainDetail = ({trainId}) => {
+    console.log("TrainDetail received in detail conponent:", trainId);
+
   const [stations, setStations] = useState([]);
   const [stationNames, setStationNames] = useState({});
-  const apiUrl = "https://rata.digitraffic.fi/api/v1/trains/latest/265";
+  let trainNumber="68";// hardcoded train number; remove later
+trainNumber = trainId; // Use the trainId prop passed to the component
+  const apiUrl = `https://rata.digitraffic.fi/api/v1/trains/latest/${trainNumber}`; // API URL for the specific train number
 
   useEffect(() => {
     const fetchTrainData = async () => {
@@ -90,7 +94,7 @@ const TrainDetail = () => {
 
   return (
     <div>
-      <h2>Train Schedule (EET) IC 29</h2>
+      <h2>Train Schedule (EET) IC {trainNumber}</h2>
       <table border="1">
         <thead>
           <tr>

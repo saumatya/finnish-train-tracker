@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTrainLocations, fetchStations } from "../reducers/trainSlice";
-import { MapContainer, TileLayer, Marker, Popup, LayersControl, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, LayersControl, useMap,Tooltip  } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Card, CardContent } from "@mui/material";
 import L from "leaflet";
 import "leaflet-minimap";
+import TrainDetail from "./TrainDetail";
+
+
+
 
 // Custom Icons
 const trainIcon = new L.Icon({
@@ -15,7 +19,7 @@ const trainIcon = new L.Icon({
 
 const stationIcon = new L.Icon({
   iconUrl: "/station-marker.png",
-  iconSize: [20, 20],
+  iconSize: [10, 10],
 });
 
 const MiniMapControl = () => {
@@ -29,6 +33,7 @@ const MiniMapControl = () => {
 };
 
 const TrainTracker = () => {
+  const [selectedTrainId, setSelectedTrainId] = useState(null);
   const dispatch = useDispatch();
   const { trains, stations, loading, error } = useSelector((state) => state.trains);
   const [intervalId, setIntervalId] = useState(null);
@@ -41,7 +46,7 @@ const TrainTracker = () => {
     return () => clearInterval(id);
   }, [dispatch]);
 
-  return (
+  return ( 
     <div className="h-screen w-full p-4">
       <h1 className="text-xl font-bold mb-4">Live Train Tracker</h1>
       {loading && <p>Loading...</p>}
@@ -64,13 +69,25 @@ const TrainTracker = () => {
                   <p>Train ID: {train.id}</p>
                   <p>Speed: {train.speed} km/h</p>
                   <p>Destination: {train.destination}</p>
+                  <button 
+                      onClick={() => setSelectedTrainId(train.id)} 
+                      className="text-blue-600 underline mt-2"
+                    >
+                      View Details
+                </button>
                 </CardContent>
               </Card>
             </Popup>
           </Marker>
         ))}
-        {stations.map((station) => (
-          <Marker key={station.stationUICCode} position={[station.latitude, station.longitude]} icon={stationIcon}>
+        {stations.map((station, index) => (
+            <Marker 
+            key={`${station.stationName}-${index}`}  // Makes key unique
+            position={[station.latitude, station.longitude]} 
+            icon={stationIcon}
+          >
+          {/* <Marker key={station.stationUICCode} position={[station.latitude, station.longitude]} icon={stationIcon}> */}
+            <Tooltip>{station.stationName}</Tooltip>
             <Popup>
               <Card>
                 <CardContent>
@@ -83,6 +100,10 @@ const TrainTracker = () => {
           </Marker>
         ))}
       </MapContainer>
+
+
+      <TrainDetail trainId={selectedTrainId} />
+
     </div>
   );
 };
