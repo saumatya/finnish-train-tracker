@@ -1,0 +1,85 @@
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    background-color: #f4f4f4;
+    padding: 15px;
+    border-right: 1px solid #ddd;
+  }
+  
+  .sidebar-navigation button {
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .sidebar-navigation button:hover {
+    background-color: #0056b3;
+  }
+  
+  .content {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+  }
+  
+  .card {
+    background-color: #ffffff;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-header {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .card-body {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .card-body .row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  
+  .card-body .row span {
+    font-size: 14px;
+  }
+  
+  .card-body .row .label {
+    font-weight: bold;
+  }
+  
+  .card-footer {
+    text-align: right;
+    font-size: 12px;
+    color: gray;
+  }
+  
+  .app-layout {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .sidebar {
+    width: 250px;
+    background-color: #f2f2f2;
+    padding: 1rem;
+    overflow-y: auto;
+  }
+  
+  .main-content {
+    flex-grow: 1;
+    padding: 1rem;
+  }
+  

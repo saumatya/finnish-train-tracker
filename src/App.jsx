@@ -7,16 +7,18 @@ import TrainArrivals from './components/TrainArrivals'
 import TrainDepartures from './components/TrainDepartures'
 import StationDetail from './components/StationDetail'
 import SearchBox from './components/SearchBox'
+import Sidebar from './components/Sidebar'
 
 function App() {
   return (
     <div className="flex h-screen">
-      <SearchBox />
+      {/* <SearchBox /> */}
+      <Sidebar />
       <TrainTracker />
-      <TrainDetail />
+      {/* <TrainDetail />
       <StationDetail />
       <TrainArrivals/>
-      <TrainDepartures/>
+      <TrainDepartures/> */}
 
     </div>
   )
